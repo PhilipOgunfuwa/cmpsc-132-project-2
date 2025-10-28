@@ -3,16 +3,15 @@
 class PolynomialTerm:
     '''Class to hold Polynomial Terms'''
     def __init__(self, coefficient: float, variable: str, degree: int):
+
+        if len(variable) > 1:
+            raise ExceptionType("Only single variables are accepted")
+
         self.coefficient = coefficient
         self.variable = variable
         self.degree = degree
         self.degree_superscript = ""
         self.degree_superscript = self.getDegreeSuperScript()
-
-    def simplify(self):
-        """Method to simplify Polynomial term if its degree is 0"""
-        if self.degree == 0:
-            return PolynomialTerm(self.coefficient, "", 0)
 
     def __add__(self, right):
         """Overloaded addition operator that allows for polynomial terms to be added"""
@@ -24,18 +23,41 @@ class PolynomialTerm:
         if self.areLikeTerms(right):
             return PolynomialTerm(self.coefficient - right.coefficient, self.variable, self.degree)
 
+    def __mul__(self, right):
+        """Overloaded the multiplication operator allows for polynomial terms to be multiplied"""
+        if self.variable != right.variable:
+            return "Failed"
+
+        return PolynomialTerm(self.coefficient * right.coefficient, self.variable, self.degree + right.degree)
+
+    def __truediv__(self, right):
+        """Overloads the true division operator and allows for polynomial terms to be dividied"""
+        if self.variable != right.variable:
+            return "Failed"
+
+        return PolynomialTerm(self.coefficient * right.coefficient, self.variable, self.degree - right.degree)
+
     def __eq__(self, right):
         """Overloaded equality operator the allows for polynomial terms to be checked for equality"""
         if self.coefficient != right.coefficient:
             return False
 
-        if self.variable != right.variable:
+        if self.variable != right.variable and not (self.isAConstant() and right.isAConstant()):
             return False
 
         if self.degree != right.degree:
             return False
 
         return True
+
+    def setVariableEqualTo(self, value):
+        return self.coefficient * (value ** self.degree)
+
+    def integrate(self):
+        return PolynomialTerm(self.coefficient / (self.degree + 1), self.variable, self.degree + 1)
+
+    def differentiate(self):
+        return PolynomialTerm(self.coefficient * self.degree, self.variable, self.degree - 1)
 
     
     def isAConstant(self):

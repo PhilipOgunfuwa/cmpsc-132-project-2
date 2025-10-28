@@ -21,11 +21,24 @@ class Polynomial:
 
         return None
 
+    def subtractTerm(self, coefficient, variable, degree):
+        """Method to subtract term from polynomial"""
+        self.subtractPolynomialTerm(PolynomialTerm(coefficient, variable, degree))
+
+    def subtractPolynomialTerm(self, newTerm):
+        copy_of_newTerm = PolynomialTerm(-newTerm.coefficient, newTerm.variable, newTerm.degree)
+        self.addPolynomialTerm(copy_of_newTerm)
+
     def addTerm(self, coefficient, variable, degree):
         """Method to add term to polynomial"""
         self.addPolynomialTerm(PolynomialTerm(coefficient, variable, degree))
 
     def addPolynomialTerm(self, newTerm):
+        
+        #Don't add because term is 0
+        if newTerm.coefficient == 0:
+            return True
+
         #Polynomial is empty
         if self.polynomial.head is None:
             self.polynomial.append(newTerm)
@@ -58,7 +71,7 @@ class Polynomial:
             
             #Add constants to the end of the polynomial and keep non constants to the most left
             if currentTerm is self.polynomial.tail:
-                self.polynomial.insertNodeBeforeNode(DoublyLinkedNode(newTerm), currentTerm)
+                self.polynomial.insertNodeAfterNode(DoublyLinkedNode(newTerm), currentTerm)
                 return True
 
 
@@ -67,7 +80,46 @@ class Polynomial:
         #Failed to add Term for some reason 
         return False
 
+    def indefiniteIntegral(self):
+        integralOfPolynomial = Polynomial()
+        for term in self.polynomial:
+            integralOfPolynomial.addPolynomialTerm(term.integrate())
 
+        return integralOfPolynomial
+
+    def printIndefiniteIntegral(self):
+        integralOfPolynomial = self.indefiniteIntegral()
+
+        return f"{integralOfPolynomial} + C"
+
+    def definiteIntegral(self, lower_bound, upper_bound):
+        integralOfPolynomial_lower = self.indefiniteIntegral()
+        integralOfPolynomial_upper = self.indefiniteIntegral()
+
+        return integralOfPolynomial_upper
+    
+    def derivative(self):
+        derivativeOfPolynomial = Polynomial()
+
+        for term in self.polynomial:
+            derivativeOfPolynomial.addPolynomialTerm(term.differentiate())
+
+        return derivativeOfPolynomial
+
+    def __sub__(self, right):
+        """Overloads the subtraction operator for Polynomials"""
+        
+        #Difference of the polynomials
+        differenceOfPolynomials = Polynomial()
+
+        #Subtract left terms
+        for leftTerm in self.polynomial:
+            differenceOfPolynomials.subtractPolynomialTerm(leftTerm)
+
+        for rightTerm in right.polynomial:
+            differenceOfPolynomials.subtractPolynomialTerm(rightTerm)
+
+        return differenceOfPolynomials
 
     def __add__(self, right):
         """Overloads the adding operator for Polynomials"""
@@ -82,8 +134,6 @@ class Polynomial:
         #Add right terms
         for rightTerm in right.polynomial:
             sumOfPolynomials.addPolynomialTerm(rightTerm)
-
-
 
         return sumOfPolynomials
 
@@ -112,19 +162,14 @@ def main():
     test2.addTerm(10, "x", 2)
     test2.addTerm(10, "", 0)
     test3 = Polynomial()
-    test3.addTerm(5, "xy", 3)
+    test3.addTerm(5, "x", 3)
     test3.addTerm(5, "x", 0)
 
+    print(test3 - test)
+    print(test3.derivative())
     print(test3)
     print(test)
-    print(test2)
-    print(test + test2 + test3)
 
-    for item in test3.polynomial:
-        item.coefficient /= 2
-
-
-    print(test3)
 
 
 
