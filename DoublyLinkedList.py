@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from DoublyLinkedNode import DoublyLinkedNode
-from DoublyLinkedListIterator import DoublyLinkedListIterator
 
 class DoublyLinkedList:
     def __init__(self, head=None, tail=None):
@@ -63,16 +62,21 @@ class DoublyLinkedList:
             newNode.next = successorNode
             successorNode.previous = newNode
 
+    def removeNode(self, node):
 
-    def __iter__(self):
-        """Overloaded iterator operator that goes to DoublyLinkedListIterator to allow for looping the linked list"""
-        return DoublyLinkedListIterator(self.head)
+        if node is self.head and node is self.tail:
+            self.head = None
+            self.tail = None
 
+        elif node is self.head:
+            node.next.previous = None
+            self.head = node.next
 
-    def __contains__(self, data):
-        """Overloads contains operator so you can check to see if data is within the linked list"""
-        for node in self:
-            if node.data == data:
-                return True
+        elif node is self.tail:
+            node.previous.next = None
+            self.tail = node.previous
 
-        return False
+        else:
+            node.previous.next = node.next
+            node.next.previous = node.previous
+
