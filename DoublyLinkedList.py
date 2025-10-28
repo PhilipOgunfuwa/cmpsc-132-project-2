@@ -9,11 +9,12 @@ class DoublyLinkedList:
         self.tail = tail
 
     def append(self, data):
+        """Method to append non nodes to linked list"""
         newNode = DoublyLinkedNode(data)
         self.appendNode(newNode)
 
     def appendNode(self, newNode):
-
+        """Method to append nodes to linked list"""
         if self.head is None:
             self.head = newNode
             self.tail = newNode
@@ -24,12 +25,13 @@ class DoublyLinkedList:
             self.tail = newNode
 
     def prepend(self, data):
+        """Method to prepend non nodes to linked list"""
         newNode = DoublyLinkedNode(data)
         self.prependNode(newNode)
 
 
     def prependNode(self, newNode):
-
+        """Method to prepend nodes to linked list"""
         if self.head is None:
             self.head = newNode
             self.tail = newNode
@@ -40,7 +42,7 @@ class DoublyLinkedList:
             self.head = newNode
 
     def insertNodeAfterNode(self, newNode, predecessorNode):
-
+        """Method to insert a Node after another Node"""
         if predecessorNode is self.tail:
             self.appendNode(newNode)
 
@@ -51,6 +53,7 @@ class DoublyLinkedList:
             predecessorNode.next = newNode
 
     def insertNodeBeforeNode(self, newNode, successorNode):
+        """Method to insert a Node after another Node"""
         if successorNode is self.head:
             self.prependNode(newNode)
 
@@ -62,4 +65,14 @@ class DoublyLinkedList:
 
 
     def __iter__(self):
+        """Overloaded iterator operator that goes to DoublyLinkedListIterator to allow for looping the linked list"""
         return DoublyLinkedListIterator(self.head)
+
+
+    def __contains__(self, data):
+        """Overloads contains operator so you can check to see if data is within the linked list"""
+        for node in self:
+            if node.data == data:
+                return True
+
+        return False
