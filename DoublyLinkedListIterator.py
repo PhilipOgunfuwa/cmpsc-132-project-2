@@ -14,4 +14,4 @@ class DoublyLinkedListIterator:
         else:
             copyCurrentNode = self.currentNode
             self.currentNode = self.currentNode.next
-            return copyCurrentNode
+            return copyCurrentNode.data
