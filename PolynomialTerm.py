@@ -13,19 +13,32 @@ class PolynomialTerm:
         if self.variable != right.variable:
             return "Failed"
 
+        if self.variable == "" and right.variable == "":
+            return PolynomialTerm((self.coefficient ** self.degree) + (right.coefficient ** right.degree), "", 1)
+
         if self.degree != right.degree:
             return "Failed"
 
         return PolynomialTerm(self.coefficient + right.coefficient, self.variable, self.degree)
 
-    def __sub__(self, right):
-        if self.variable != right.variable:
-            return "Failed"
+    def isAConstant(self):
+        if self.variable != "":
+            return False
+
+        return True
+
+    def areLikeTerms(self, right):
+
+        if self.variable == "" and right.variable == "":
+            return True
 
         if self.degree != right.degree:
-            return "Failed"
+            return False
 
-        return PolynomialTerm(self.coefficient - right.coefficient, self.variable, self.degree)
+        if self.variable != right.variable:
+            return False
+
+        return True
 
     def getDegreeSuperScript(self):
         superscript_escapes = [
@@ -41,7 +54,7 @@ class PolynomialTerm:
             degree_superscript += superscript_escapes[int(digit)]
 
         if self.degree < 0:
-            degree_superscript = "\u207b" + self.degree_superscript
+            degree_superscript = "\u207b" + degree_superscript
 
         return degree_superscript
 

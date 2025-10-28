@@ -40,10 +40,9 @@ class DoublyLinkedList:
             self.head = newNode
 
     def insertNodeAfterNode(self, newNode, predecessorNode):
+
         if predecessorNode is self.tail:
-            predecessorNode.next = newNode
-            newNode.previous = predecessorNode
-            self.tail = newNode
+            self.appendNode(newNode)
 
         else:
             newNode.next = predecessorNode.next
@@ -53,9 +52,7 @@ class DoublyLinkedList:
 
     def insertNodeBeforeNode(self, newNode, successorNode):
         if successorNode is self.head:
-            successorNode.previous = newNode
-            newNode.next = successorNode
-            self.head = newNode
+            self.prependNode(newNode)
 
         else:
             newNode.previous = successorNode.previous
@@ -63,7 +60,6 @@ class DoublyLinkedList:
             newNode.next = successorNode
             successorNode.previous = newNode
 
-        return "N/A"
 
     def __iter__(self):
         return DoublyLinkedListIterator(self.head)

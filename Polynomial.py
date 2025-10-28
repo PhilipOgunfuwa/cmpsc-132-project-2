@@ -5,9 +5,10 @@ from PolynomialTerm import PolynomialTerm
 from DoublyLinkedList import DoublyLinkedList
 
 class Polynomial:
-    def __init__(self):
+    def __init__(self, size=0):
         self.polynomial = DoublyLinkedList()
-        #
+        self.size = size
+
     def addTerm(self, coefficient, variable, degree):
         self.addPolynomialTerm(PolynomialTerm(coefficient, variable, degree))
 
@@ -19,20 +20,23 @@ class Polynomial:
             return
 
         while currentTerm is not None:
-            if currentTerm.data.degree == term.degree:
-                if currentTerm.data.variable == term.variable:
-                    currentTerm.data += term
-                    return
-                #FIXME
-                #elif (currentTerm is self.polynomial.tail) or (currentTerm.next.data.variable != term.variable):
-                    #self.polynomial.insertNodeAfterNode(term, currentTerm)
+            if currentTerm.data.areLikeTerms(term):
+               currentTerm.data += term
+               return
 
-            elif currentTerm.data.degree < term.degree:
+            if currentTerm.data.degree < term.degree and not term.isAConstant():
                 self.polynomial.insertNodeBeforeNode(DoublyLinkedNode(term), currentTerm)
                 return
 
+            if currentTerm is self.polynomial.tail:
+                if currentTerm.data.isAConstant():
+                    self.polynomial.insertNodeBeforeNode(DoublyLinkedNode(term), currentTerm)
+                else:
+                    self.polynomial.append(term)
 
-            
+                return
+
+
             currentTerm = currentTerm.next
 
     #See if this should be __repr__
@@ -43,6 +47,7 @@ class Polynomial:
             if first_term:
                 string_representation += f"{term.data}"
                 first_term = False
+                continue
 
             string_representation += f" + {term.data}"
 
@@ -51,15 +56,23 @@ class Polynomial:
 
 def main():
     test = Polynomial()
+    test.addTerm(10, "x", 5)
     test.addTerm(10, "x", 2)
     test.addTerm(10, "x", 3)
     test.addTerm(20, "x", 2)
-    test.addTerm(5, "y", 2)
-    test.addTerm(5, "x", 10)
-    test.addTerm(12, "z", 5)
-    test.addTerm(5, "xy", 10)
-    test.addTerm(5, "z", 5)
-    test.addTerm(3, "", 1)
+    test.addTerm(10, "x", 3)
+    test.addTerm(5, "", 1)
+    test.addTerm(5, "", 1)
+    test.addTerm(5, "x", 1)
+    test.addTerm(5, "xy", 2)
+    test.addTerm(5, "", 5)
+    test.addTerm(5, "", 2)
+    test.addTerm(2, "", -1)
+    test.addTerm(.5, "z", -10)
+    test.addTerm(.2, "z", -10)
+
+
+    print(PolynomialTerm(5, "", 1))
     print(test)
 
     currentNode = test.polynomial.head
