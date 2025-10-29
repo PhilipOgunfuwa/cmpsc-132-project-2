@@ -56,17 +56,39 @@ class Polynomial:
     
         currentTerm = self.polynomial.head
         firstTerm = True
+        isNegative = False
         exponent = ""
 
         while currentTerm is not None:
-            for digit in str(currentTerm.data[1]):
-                exponent += superscript_escapes[int(digit)]
+            if currentTerm.data[1] not in [0, 1]:
+                
+                if currentTerm.data[1] < 0:
+                    exponent = "-"
+                    isNegative = True
+                else:
+                    isNegative = False
 
+                for digit in str(currentTerm.data[1]):
+                    if isNegative:
+                        exponent = "-"
+                        isNegative = False
+                        continue
+
+                    exponent += superscript_escapes[int(digit)]
+            else:
+                exponent = ""
+
+            if currentTerm.data[1] == 0:
+                variable = ""
+            else:
+                variable = self.variable
+            
+            
             if firstTerm:
-                polynomial_string += f"{currentTerm.data[0]}{self.variable}{exponent}"
+                polynomial_string += f"{currentTerm.data[0]}{variable}{exponent}"
                 firstTerm = False
             else:
-                polynomial_string += f" + {currentTerm.data[0]}{self.variable}{exponent}"
+                polynomial_string += f" + {currentTerm.data[0]}{variable}{exponent}"
                 
             exponent = ""
 
@@ -98,49 +120,48 @@ class Polynomial:
     def getSize(self):
         return self.size
 
-def parseStringForPolynomial(string):
-    polynomial = Polynomial("")
-    
+def parseStringForPolynomial(string, variable):
+    polynomial = Polynomial(variable)
     split_string = string.split()
-    for i in range(len(split_string)):
-        split_string[i] = split_string[i].split("^")
 
     for term in split_string:
-        if len(term) == 1 and term[0][-1].isalpha():
-            degree = 0
-            
-        elif len(term) < 2:
-            raise Exception("Too many \"^\"")
-        else:
-            if not term[1].isdigit():
-                raise Exception("Invalid character in degree/exponent")
+        term = term.split(f"{variable}^")
+        term
 
-            degree = int(term[1])
-
-        coefficient = 0
-        FirstTerm = True
-
-        for character in term[0]:
-            if character.isalpha():
-                if FirstTerm:
-                    coefficient = 1
-                variable = character
-                break
-            elif character.isdigit():
-                coefficient = int(character) + (coefficient * 10)
-                if FirstTerm:
-                    FirstTerm = False
+        if len(term) > 2:
+            raise Exception("Too many \"{variable}^\" in terms")
+        
+        #Getting degree of term
+        if len(term) == 1:
+            #If coefficient's last item is variable then no degree given
+            if term[0][-1] == variable:
+                term_degree = 1
+            #If coefficient last item is not a variable then their is no variable (constant)
             else:
-                raise Exception("Invalid character in Polynomial")
-        polynomial.variable = variable 
-        polynomial.addTerm(coefficient, degree)
+                term_degree = 0
 
+        #term degree is just the second term
+        else:
+            term_degree = int(term[1])
+
+
+        if term_degree == 1:
+            if len(term) == 1:
+                term_coefficient = term[0][:-1]
+            else:
+                term_coefficent = term[0]
+
+        else:
+            term_coefficient = term[0]
+
+        if term_coefficient == "":
+            term_coefficient = 1
+
+        term_coefficient = int(term_coefficient)
+
+        polynomial.addTerm(term_coefficient, term_degree)
 
     return polynomial
-            
-
-
-        
 
             
 
@@ -151,14 +172,17 @@ def main():
     while user_input != "q":
         
         print("Type in polynomial 1: ", end="")
-        poly1 = parseStringForPolynomial(input(">> "))
+        poly1 = parseStringForPolynomial(input(">> "), "x")
 
         print("Type in polynomial 2:", end="")
-        poly2 = parseStringForPolynomial(input(">> "))
+        poly2 = parseStringForPolynomial(input(">> "), "x")
    
         print(poly1)
+        print(poly1.size)
         print(poly2)
+        print(poly2.size)
         print(poly1 + poly2)
+        print((poly1 + poly2).size)
 
 
 if __name__ == "__main__":
