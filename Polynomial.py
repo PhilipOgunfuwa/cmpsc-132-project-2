@@ -95,36 +95,71 @@ class Polynomial:
 
         return sumOfPolynomials
 
-    def size(self):
+    def getSize(self):
         return self.size
 
+def parseStringForPolynomial(string):
+    polynomial = Polynomial("")
+    
+    split_string = string.split()
+    for i in range(len(split_string)):
+        split_string[i] = split_string[i].split("^")
+
+    for term in split_string:
+        if len(term) == 1 and term[0][-1].isalpha():
+            degree = 0
+            
+        elif len(term) < 2:
+            raise Exception("Too many \"^\"")
+        else:
+            if not term[1].isdigit():
+                raise Exception("Invalid character in degree/exponent")
+
+            degree = int(term[1])
+
+        coefficient = 0
+        FirstTerm = True
+
+        for character in term[0]:
+            if character.isalpha():
+                if FirstTerm:
+                    coefficient = 1
+                variable = character
+                break
+            elif character.isdigit():
+                coefficient = int(character) + (coefficient * 10)
+                if FirstTerm:
+                    FirstTerm = False
+            else:
+                raise Exception("Invalid character in Polynomial")
+        polynomial.variable = variable 
+        polynomial.addTerm(coefficient, degree)
+
+
+    return polynomial
+            
+
+
+        
+
+            
 
 
 def main():
-    poly = Polynomial("x")
 
-    poly2 = Polynomial("x")
+    user_input = ""
+    while user_input != "q":
+        
+        print("Type in polynomial 1: ", end="")
+        poly1 = parseStringForPolynomial(input(">> "))
 
-    poly2.addTerm(3, 5)
-    poly.addTerm(3, 4)
+        print("Type in polynomial 2:", end="")
+        poly2 = parseStringForPolynomial(input(">> "))
+   
+        print(poly1)
+        print(poly2)
+        print(poly1 + poly2)
 
-    poly.addTerm(2, 5) 
-    poly.addTerm(1, 3)
-
-    print(poly)
-    print(poly2)
-
-    print(poly + poly2)
-
-    print(poly.size)
-    print(poly2.size)
-    print((poly + poly2).size)
-
-    poly2.addTerm(-2, 5)
-    print(poly2)
-    poly2.addTerm(-1, 5)
-    print(poly2)
-    print(poly2.size)
 
 if __name__ == "__main__":
     main()

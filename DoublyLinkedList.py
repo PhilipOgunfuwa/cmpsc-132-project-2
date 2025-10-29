@@ -63,6 +63,7 @@ class DoublyLinkedList:
             successorNode.previous = newNode
 
     def removeNode(self, node):
+        """Method to remove node"""
 
         if node is self.head and node is self.tail:
             self.head = None
