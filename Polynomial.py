@@ -70,7 +70,7 @@ class Polynomial:
 
                 for digit in str(currentTerm.data[1]):
                     if isNegative:
-                        exponent = "-"
+                        exponent = "\u207b"
                         isNegative = False
                         continue
 
@@ -155,7 +155,10 @@ def parseStringForPolynomial(string, variable):
             term_coefficient = term[0]
 
         if term_coefficient == "":
-            term_coefficient = 1
+            term_coefficient = "1"
+
+        if term_coefficient[0] == "-":
+            term_coefficient = -1
 
         term_coefficient = int(term_coefficient)
 
@@ -168,21 +171,31 @@ def parseStringForPolynomial(string, variable):
 
 def main():
 
+    print("\nThe following program does the following:")
+    print("1.) Takes user input for two polynomials")
+    print("2.) Orders polynomials rom the highest degree to the lowest degree")
+    print("3.) Outputs the sum of the polynomials\n")
+    print("Your expected to type in polynomials like: 10x^2 9x 10\n")
+    print("The program will read 10x^2 as 10 to the second degree")
+    print("The program will read 9x has 9 to the 1st degree")
+    print("The program will read 10 as 10 the the 0th degree\n")
+    print("If you want to put in an exponent be sure to do x^(exponent)")
+    print("10^2 is not acceptable as user input\n")
+    print("If you want something to be of the 1st degree you can either implicity")
+    print("Do this by writing out 10x or explicitly do it with 10x^1. This principle works for 0th degree\n")
+    print("You can type in as many terms as you want just be sure to put a space between each term!\n")
+    print("starting...\n")
     user_input = ""
-    while user_input != "q":
-        
-        print("Type in polynomial 1: ", end="")
-        poly1 = parseStringForPolynomial(input(">> "), "x")
 
-        print("Type in polynomial 2:", end="")
-        poly2 = parseStringForPolynomial(input(">> "), "x")
-   
-        print(poly1)
-        print(poly1.size)
-        print(poly2)
-        print(poly2.size)
-        print(poly1 + poly2)
-        print((poly1 + poly2).size)
+    while user_input != "q":
+        user_input = input("Enter polynomial 1 to add >> ")
+        polynomial1 = parseStringForPolynomial(user_input, "x")
+        user_input = input("Enter polynomial 2 to add >> ")
+        polynomial2 = parseStringForPolynomial(user_input, "x")
+        print(f"here is polynomial 1: {polynomial1}")
+        print(f"here is polynomial 2: {polynomial2}")
+        print(f"here is their sum of polynomial 1 and 2: {polynomial1 + polynomial2}")
+        user_input = input("Would you like to quit? (q to quit) >> ")
 
 
 if __name__ == "__main__":
